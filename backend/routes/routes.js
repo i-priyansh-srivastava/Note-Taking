@@ -6,5 +6,5 @@ const { DelNotes } = require("../controllers/DelNotes")
 
 router.get('/allNotes', AllNotes);
 router.post('/newNote', AddNotes);
-router.delete('/delNote', DelNotes)
+router.delete('/delNote/:id', DelNotes)
 module.exports = router;

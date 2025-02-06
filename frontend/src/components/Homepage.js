@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "../components/Card";
-import { Input } from "../components/Input";
-import { Button } from "../components/Button";
-import { CardContent } from "../components/CardContent";
-import { Mic, Search, Plus, X } from "lucide-react";
+import { Mic, Search, Plus, X, Trash } from "lucide-react";
 import "../styles/Homepage.css";
 
 const Homepage = () => {
@@ -28,22 +25,22 @@ const Homepage = () => {
 
   const addNote = async () => {
     try {
-      console.log("request sending");
-      
-      const response = await axios.post("http://localhost:5000/api/v1/newNote", {
-        Title:Title,
-        content:content,
-      });
-
-      console.log("request sent");
-      
-
+      const response = await axios.post("http://localhost:5000/api/v1/newNote", { Title, content });
       setNotes([...notes, response.data.note]);
       setShowPopup(false);
-      setTitle(""); 
+      setTitle("");
       setcontent("");
     } catch (error) {
       console.error("Error adding note:", error);
+    }
+  };
+
+  const deleteNote = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/v1/delNote/${id}`);
+      setNotes(notes.filter((note) => note._id !== id));
+    } catch (error) {
+      console.error("Error deleting note:", error);
     }
   };
 
@@ -65,29 +62,32 @@ const Homepage = () => {
 
       <main className="main-content">
         <div className="search-bar">
-          <Input placeholder="Search" className="search-input" />
-          <Button className="search-button">
+          <input placeholder="Search" className="search-input" />
+          <button className="search-button">
             <Search size={18} />
-          </Button>
+          </button>
         </div>
 
         <div className="notes-grid">
           {notes.map((note) => (
-            <Card key={note._id} className="note-card"> {/* Fixed: Using `note._id` */}
-              <CardContent>
+            <section key={note._id} className="note-card">
+              <div className="each-note">
                 <p className="note-time">{note.createdAt}</p>
                 <h2 className="note-title">{note.Title}</h2>
                 <p className="note-content">{note.content}</p>
-              </CardContent>
-            </Card>
+                <button className="delete-button" onClick={() => deleteNote(note._id)}>
+                  <Trash size={18} />
+                </button>
+              </div>
+            </section>
           ))}
         </div>
       </main>
 
       <div className="add-note-button-container">
-        <Button className="add-note-button" onClick={() => setShowPopup(true)}>
+        <button className="add-note-button" onClick={() => setShowPopup(true)}>
           <Plus size={18} /> Add New Note
-        </Button>
+        </button>
       </div>
 
       {showPopup && (
@@ -99,7 +99,7 @@ const Homepage = () => {
                 <X size={20} />
               </button>
             </div>
-            <Input
+            <input
               type="text"
               placeholder="Enter note title"
               value={Title}
@@ -112,14 +112,14 @@ const Homepage = () => {
               onChange={(e) => setcontent(e.target.value)}
             />
             <div className="record-section">
-              <Button className="record-button" onClick={toggleRecording}>
+              <button className="record-button" onClick={toggleRecording}>
                 <Mic size={18} />
                 {isRecording ? "Stop Recording" : "Start Recording"}
-              </Button>
+              </button>
             </div>
-            <Button className="save-button" onClick={addNote}>
+            <button className="save-button" onClick={addNote}>
               Save Note
-            </Button>
+            </button>
           </div>
         </div>
       )}

@@ -6,9 +6,7 @@ import axios from 'axios';
 
 const LoginSign = (props) => {
     const roleMap = {
-        Patient: "/patient_dashboard",
-        Doctor: "/doctor_dashboard",
-        Admin: "/admin_dashboard"
+        Home: "/home",
     };
 
     const [role, setRole] = useState('');
