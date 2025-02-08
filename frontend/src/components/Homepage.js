@@ -10,6 +10,8 @@ const Homepage = () => {
   const [Title, setTitle] = useState("");
   const [content, setcontent] = useState("");
   const [isRecording, setIsRecording] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +50,14 @@ const Homepage = () => {
     setIsRecording(!isRecording);
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredNotes = notes.filter((n) =>
+    n.Title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="home-container">
       <aside className="nav-section">
@@ -62,14 +72,14 @@ const Homepage = () => {
 
       <main className="main-content">
         <div className="search-bar">
-          <input placeholder="Search" className="search-input" />
+          <input placeholder="Search" className="search-input" onChange={handleSearch} />
           <button className="search-button">
             <Search size={18} />
           </button>
         </div>
 
         <div className="notes-grid">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <section key={note._id} className="note-card">
               <div className="each-note">
                 <p className="note-time">{note.createdAt}</p>
